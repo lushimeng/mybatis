@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.SqlMapper">
+    <!--List<User> getUserByLike(@Param("hoHu") String moHu);-->
+    <select id="getUserByLike" resultType="User">
+<!--        Preparing: select * from t_user where username like '%sm%'-->
+<!--        select * from t_user where username like '%${moHu}%'-->
+
+
+<!--        Preparing: select * from t_user where username like concat('%',?,'%')-->
+<!--        Parameters: sm(String)-->
+<!--        select * from t_user where username like concat('%',#{moHu},'%')-->
+
+<!--        Preparing: select * from t_user where username like "%"?"%"-->
+<!--        Parameters: sm(String) (BaseJdbcLogger.java:137)-->
+        select * from t_user where username like "%"#{moHu}"%"
+    </select>
+
+    <!--int deleteMore(@Param("ids") String ids);-->
+    <delete id="deleteMore">
+<!--        连续删除错误写法1：delete from t_user where id in (#{ids})-->
+<!--        连续删除错误写法2：delete from t_user where id in ('${ids}')-->
+<!--        存在sql注入，会把数据库中的所有数据删除：delete from t_user where id in (${ids}) or '1' = '1'-->
+
+
+        delete from t_user where id in (${ids})
+    </delete>
+
+    <!--List<User> getUserByTable(@Param("tableName") String tableName);-->
+    <select id="getUserByTable" resultType="User">
+        select * from ${tableName}
+    </select>
+
+    <!--
+        void insertUser(User user) ;
+        useGeneratedKeys :设置当前标签中的sql使用了自增的主键
+        keyProperty:将自增的值主键的赋值给传输到映射文件中参数的某个属性
+    -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into t_user values(null, #{username}, #{password}, #{age}, #{sex}, #{email})
+    </insert>
+
+</mapper>

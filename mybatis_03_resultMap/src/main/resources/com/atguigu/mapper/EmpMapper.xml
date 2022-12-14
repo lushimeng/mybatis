@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.EmpMapper">
+    <!--List<Emp> getEmpAll();-->
+<!--    <select id="getEmpAll" resultType="Emp">-->
+<!--        select * from t_emp-->
+<!--    </select>-->
+
+     <!--解决实体类中的属性名称和对应表中的列名不一致问题，方式1: 起别名-->
+<!--    <select id="getEmpAll" resultType="Emp">-->
+<!--        select eid, emp_name empName, age, sex, email from t_emp-->
+<!--    </select>-->
+
+
+    <!--解决实体类中的属性名称和对应表中的列名不一致问题，方式3: resultMap方式-->
+    <resultMap id="empResultMap" type="Emp">
+        <id property="eid" column="eid"/>
+        <result property="empName" column="emp_name"/>
+        <result property="age" column="age"/>
+        <result property="sex" column="sex"/>
+        <result property="email" column="email"/>
+    </resultMap>
+
+    <select id="getEmpAll" resultMap="empResultMap">
+        select * from t_emp
+    </select>
+
+
+
+    <!-- 处理多对一映射关系方式1: 使用级联属性赋值 -->
+<!--    <resultMap id="empAndDeptResultMap" type="Emp">-->
+<!--        <id property="eid" column="eid"/>-->
+<!--        <result property="empName" column="emp_name"/>-->
+<!--        <result property="empName" column="emp_name"/>-->
+<!--        <result property="age" column="age"/>-->
+<!--        <result property="sex" column="sex"/>-->
+<!--        <result property="email" column="email"/>-->
+<!--        &lt;!&ndash;下面两行的column对应部门表t_dept的字段名称&ndash;&gt;-->
+<!--        <result property="dept.did" column="did"/>-->
+<!--        <result property="dept.deptName" column="dept_name"/>-->
+<!--    </resultMap>-->
+
+<!--    &lt;!&ndash;Emp getEmpAndDeptById(Integer eid);&ndash;&gt;-->
+<!--    <select id="getEmpAndDeptById" resultMap="empAndDeptResultMap">-->
+<!--        select * from t_emp left join t_dept on t_emp.did = t_dept.did where t_emp.eid = #{eid}-->
+<!--    </select>-->
+
+
+    <!-- 处理多对一映射关系方式2: 使用association处理映射关系-->
+    <resultMap id="empAndDeptResultMap" type="Emp">
+        <id property="eid" column="eid"/>
+        <result property="empName" column="emp_name"/>
+        <result property="age" column="age"/>
+        <result property="sex" column="sex"/>
+        <result property="email" column="email"/>
+        <!--
+            association: 处理多对一的映射关系
+            property: 需要处理多一的映射关系的属性名
+            javaType: 该属性的类型
+        -->
+        <association property="dept" javaType="Dept">
+            <id property="did" column="did"/>
+            <result property="deptName" column="dept_name"/>
+        </association>
+    </resultMap>
+
+    <!--Emp getEmpAndDeptById(Integer eid);-->
+    <select id="getEmpAndDeptById" resultMap="empAndDeptResultMap">
+        select * from t_emp left join t_dept on t_emp.did = t_dept.did where t_emp.eid = #{eid}
+    </select>
+
+
+    <!-- 处理多对一映射关系方式3: 分部查询-->
+    <resultMap id="getEmpAndDeptByStepOneResultMap" type="Emp">
+        <id property="eid" column="eid"/>
+        <result property="empName" column="emp_name"/>
+        <result property="age" column="age"/>
+        <result property="sex" column="sex"/>
+        <result property="email" column="email"/>
+        <!--
+            select：设置分布查询的sql的唯一标识（namespace.SQLId或mapper接口的全类名.方法名）
+            column：设置分步查询的条件
+        -->
+        <association property="dept"
+                     select="com.atguigu.mapper.DeptMapper.getEmpAndDeptByStepTwo"
+                     column="did"/>
+    </resultMap>
+
+    <!-- Emp getEmpAndDeptByStepOne(@Param("eid") Integer eid);-->
+    <select id="getEmpAndDeptByStepOne" resultMap="getEmpAndDeptByStepOneResultMap">
+        select * from t_emp where eid = #{eid}
+    </select>
+
+
+    <!--List<Emp> getDeptAndEmpTwo(@Param("did") Integer did);-->
+    <resultMap id="getDeptAndEmpTwoResultMap" type="Emp">
+        <id property="eid" column="eid"/>
+        <result property="empName" column="emp_name"/>
+        <result property="age" column="age"/>
+        <result property="email" column="email"/>
+        <result property="sex" column="sex"/>
+    </resultMap>
+
+    <select id="getDeptAndEmpTwo" resultMap="getDeptAndEmpTwoResultMap">
+        select * from t_emp where t_emp.did = #{did}
+    </select>
+
+</mapper>

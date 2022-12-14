@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.SelectMapper">
+
+    <!--User selectById(@Param("id") int id);-->
+    <select id="selectById" resultType="User">
+        select * from t_user where id = #{id};
+        <!-- select * from t_user where id = '{id}' -->
+    </select>
+
+    <!-- List<User> getUserList(); 特别注意，返回值为List集合的时候，resultMap也是User类型 -->
+    <select id="getUserList" resultType="User">
+        select * from t_user;
+    </select>
+
+    <!-- int getCount(); -->
+    <select id="getCount" resultType="int">
+        select count(id) from t_user;
+    </select>
+
+    <!-- Map<String, Object> getUserToMap(@Param("id") int id); -->
+    <select id="getUserToMap" resultType="map">
+        select * from t_user where id = #{id}
+    </select>
+
+    <!-- List<Map<String, Object>> getUserToMaps1(); -->
+    <!-- 方式一：将表中的数据以map集合的方式查询，一条数据对应一个map；若有多条数据，就会产生多个map集合，此时可以将这些map放在一个list集合中获取   -->
+    <select id="getUserToMaps1" resultType="map">
+        select * from t_user;
+    </select>
+
+
+    <!-- Map<String, Object> getUserToMaps2(); -->
+    <!-- 方式一：将表中的数据以map集合的方式查询，一条数据对应一个map；若有多条数据，就会产生多个map集合，此时可以将这些map放在一个list集合中获取   -->
+    <select id="getUserToMaps2" resultType="map">
+        select * from t_user;
+    </select>
+
+
+</mapper>

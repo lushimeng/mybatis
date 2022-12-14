@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.UserMapper">
+    <!-- int insertUser() -->
+    <insert id="insertUser">
+        insert into t_user values(null, 'lsm', '1234', 20, '男', '3108763627@.com')
+    </insert>
+
+    <!-- int updateUser(int id) -->
+    <update id="updateUser">
+        update t_user set username = 'lsm_yxy', age = 30, email = '123456678@.com' where id = 5
+    </update>
+
+    <!-- int deleteUser(int id) -->
+    <update id="deleteUser">
+        delete from t_user where id = 10
+    </update>
+
+    <!--
+     1. 查询的标签select必须设置属性resultType或resultMap，用于设置实体类和数据库表的映射关系
+       - resultType：自动映射，用于 ====属性名和表中字段名一致===== 的情况
+       - resultMap：自定义映射，用于 ====一对多或多对一或字段名和属性名不一致===== 的情况
+     2. 当查询的数据为多条时，不能使用实体类作为返回值，只能使用集合，否则会抛出异常TooManyResultsException；
+        但是若查询的数据只有一条，可以使用实体类或集合作为返回值-->
+    <select id="selectById" resultType="User">
+        select * from t_user where id = 5;
+    </select>
+
+    <!-- 已经在mybatis-config.xml中的typeAliases标签内起别名 com.atguigu.pojo.User == User-->
+    <select id="selectAll" resultType="user">
+        select * from t_user;
+    </select>
+</mapper>

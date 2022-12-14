@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- 引入资源文件 -->
+    <properties resource="jdbc.properties"/>
+
+    <!-- 给实体类起别名 -->
+    <typeAliases>
+        <!--
+        typeAlias：设置某个具体的类型的别名
+        属性：
+        type：需要设置别名的类型的全类名
+        alias：设置此类型的别名，且别名不区分大小写。若不设置此属性，该类型拥有默认的别名，即类名
+        -->
+        <!--<typeAlias type="com.atguigu.mybatis.bean.User"></typeAlias>-->
+        <!--<typeAlias type="com.atguigu.mybatis.bean.User" alias="user">
+        </typeAlias>-->
+        <!--以包为单位，设置改包下所有的类型都拥有默认的别名，即类名且不区分大小写-->
+        <package name="com.atguigu.pojo"/>
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- 映射文件XXXMapper.xml所在的包 -->
+    <mappers>
+        <!-- <mapper resource="com.atguigu.mapper.UserMapper.xml" />-->
+        <!--
+        以包为单位，将包下所有的映射文件引入核心配置文件
+        注意：
+			1. 此方式必须保证mapper接口和mapper映射文件必须在相同的包下
+			2. mapper接口要和mapper映射文件的名字一致
+        -->
+        <package name="com.atguigu.mapper"/>
+    </mappers>
+</configuration>

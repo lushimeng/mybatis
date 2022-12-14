@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.ParameterMapper">
+    <!-- List<User> selectAll(); -->
+    <select id="selectAll" resultType="User">
+        select * from t_user;
+    </select>
+
+    <!-- 单个参数情况：User getUserByUserName(String username); -->
+    <select id="getUserByUserName" resultType="User">
+        <!-- 方式一：使用#{}获取参数，sql赋值，#{}不需要加上单引号 -->
+        <!-- Preparing: select * from t_user where username = ? -->
+        <!-- Parameters: lsm_yxy(String) -->
+        <!-- select * from t_user where username = #{username} -->
+
+        <!-- 方式二：使用${}获取参数,sql拼接字，${}需要加上单引号 -->
+        <!-- Preparing: select * from t_user where username = 'lsm_yxy'-->
+        select * from t_user where username = '${username}'
+    </select>
+
+
+    <!-- 多个参数的情况：User getUserByIdAndUsernameAndPassword(int id, String username, String password); -->
+    <select id="getUserByIdAndUsernameAndPassword" resultType="User">
+        <!-- 若mapper接口中的方法参数为多个时，此时MyBatis会自动将这些参数放在一个map集合中 -->
+
+        <!-- 为方式一：以arg0,arg1...为键，以参数值； -->
+        <!-- Preparing: select * from t_user where id = ? and username = ? and password = ? -->
+        <!-- Parameters: 9(Integer), lsm3(String), 1234(String) -->
+        <!-- select * from t_user where id = #{arg0} and username = #{arg1} and password = #{arg2}-->
+
+        <!-- Preparing: select * from t_user where id = '9' and username = 'lsm3' and password = '1234' -->
+        <!-- select * from t_user where id = '${arg0}' and username = '${arg1}' and password = '${arg2}'-->
+
+        <!-- 方式二：以param1,param2...为键，以参数值； -->
+        <!-- Preparing: select * from t_user where id = ? and username = ? and password = ? -->
+        <!-- Parameters: 9(Integer), lsm3(String), 1234(String) -->
+        <!-- select * from t_user where id = #{param1} and username = #{param2} and password = #{param3} -->
+
+        <!-- Preparing: select * from t_user where id = '9' and username = 'lsm3' and password = '1234' -->
+        select * from t_user where id = '${param1}' and username = '${param2}' and password = '${param3}'
+    </select>
+
+
+    <!-- 多个参数情况，把参数信息封装成一个map集合传入：User checkLoginByMap(Map<String,Object> map); -->
+    <select id="checkLoginByMap" resultType="User">
+        <!-- 这里传入的参数为map集合，就不能再使用arg0、param1,要使用传入map自带的键 -->
+        <!-- select * from t_user where username = #{username} and password = #{password}; -->
+        select * from t_user where username = '${username}' and password = '${password}'
+    </select>
+
+
+    <!-- 一个实体类作为参数：int insertUser(User user); -->
+    <insert id="insertUser">
+        <!-- Preparing: insert into t_user values(null, ?, ?, ?, ?, ?) -->
+        <!-- Parameters: tom(String), root(String), 10(Integer), 男(String), 123456@.com(String) -->
+        <!-- insert into t_user values(null, #{username}, #{password}, #{age}, #{sex}, #{email}) -->
+
+        <!-- insert into t_user values(null, 'tom', 'root', '10', '男', '123456@.com') -->
+        insert into t_user values(null, '${username}', '${password}', '${age}', '${sex}', '${email}')
+    </insert>
+
+    <!-- User checkLoginByParam(@Param("username") String username, @Param("password") String password); -->
+    <select id="checkLoginByParam" resultType="User">
+        <!-- Preparing: select * from t_user where username = ? and password = ? -->
+        <!-- Parameters: lsm_yxy(String), 123456(String) -->
+        <!-- select * from t_user where username = #{username} and password = #{password}-->
+
+        <!-- Preparing: select * from t_user where username = 'lsm_yxy' and password = '123456' -->
+         select * from t_user where username = '${username}' and password = '${password}'
+    </select>
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mapper.DeptMapper">
+    <!--List<Dept> getDeptAll();-->
+<!--    <select id="getDeptAll" resultType="Dept">-->
+<!--        select * from t_dept;-->
+<!--    </select>-->
+
+
+    <!--解决实体类中的属性名称和对应表中的列名不一致问题，方式1-->
+<!--    <select id="getDeptAll" resultType="Dept">-->
+<!--        select did, dept_name deptName from t_dept;-->
+<!--    </select>-->
+
+
+    <!--解决实体类中的属性名称和对应表中的列名不一致问题，方式3-->
+    <resultMap id="deptResultMap" type="Dept">
+        <id property="id" column="id"/>
+        <result property="deptName" column="dept_name"/>
+    </resultMap>
+
+    <select id="getDeptAll" resultMap="deptResultMap">
+        select * from t_dept;
+    </select>
+
+
+    <resultMap id="getEmpAndDeptByStepTwoResultMap" type="Dept">
+        <id property="did" column="did"/>
+        <result property="deptName" column="dept_name"/>
+    </resultMap>
+
+    <!-- Dept getEmpAndDeptByStepTwo(@Param("did") Integer did);-->
+    <select id="getEmpAndDeptByStepTwo" resultMap="getEmpAndDeptByStepTwoResultMap">
+        select * from t_dept where did = #{did}
+    </select>
+
+
+    <!--Dept getDeptAndEmp(@Param("did") Integer did);-->
+    <!--方式一：使用功能collection方式处理多对一方式-->
+    <resultMap id="getDeptAndEmpResultMap" type="Dept">
+        <id property="did" column="did"/>
+        <result property="deptName" column="dept_name"/>
+        <!--
+            collection:处理一对多的映射关系
+            ofType:表示该属性所对应的集合中存储数据额类型
+        -->
+        <collection property="empList" ofType="Emp">
+            <id property="eid" column="eid"/>
+            <result property="empName" column="emp_name"/>
+            <result property="age" column="age"/>
+            <result property="sex" column="sex"/>
+            <result property="email" column="email"/>
+        </collection>
+    </resultMap>
+
+    <select id="getDeptAndEmp" resultMap="getDeptAndEmpResultMap">
+        select * from t_dept left join t_emp on t_dept.did = t_emp.did where t_dept.did = #{did}
+    </select>
+
+
+    <!--Dept getDeptAndEmpOne(@Param("did") Integer did);-->
+    <!--方式二：一对多，使用分布查询方式-->
+    <resultMap id="getDeptAndEmpOneResultMap" type="Dept">
+        <id property="did" column="did"/>
+        <result property="deptName" column="dept_name"/>
+        <collection property="empList"
+                    select="com.atguigu.mapper.EmpMapper.getDeptAndEmpTwo"
+                    column="did"/>
+    </resultMap>
+
+    <select id="getDeptAndEmpOne" resultMap="getDeptAndEmpOneResultMap">
+        select * from t_dept where t_dept.did = #{did}
+    </select>
+
+</mapper>

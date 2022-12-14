@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="mybaits_01_quickstart" />
+        <module name="mybatis_04_dynamaicSql" />
+        <module name="mybatis_05_MBG" />
+        <module name="mybaits_02_getParams" />
+        <module name="mybatis_03_resultMap" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="b5m-web-adrsclick (1)" target="1.5" />
+      <module name="b5m-web-adrsclick (2)" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
